@@ -160,7 +160,7 @@ void writeValueW(traits::IOWriter& w, Placeholder fmt, char const* value) {
         w.write('\"');
         w.write(value);
         w.write('\"');
-    } else if (fmt.spec != Placeholder::undefined && fmt.spec != Placeholder::string) {
+    } else if (fmt.spec != Placeholder::undefined && fmt.spec != Placeholder::string) [[unlikely]] {
         w.write("??");
     } else {
         w.write(value);
@@ -199,7 +199,7 @@ void formatWValue(traits::IOWriter& w, std::string_view& fstr, T const value) {
             fstr.remove_prefix(1);
 
             size_t const close_pos = fstr.find('}');
-            if (close_pos == std::string_view::npos) {
+            if (close_pos == std::string_view::npos) [[unlikely]] {
                 w.write("??");
                 return;
             }
@@ -209,7 +209,7 @@ void formatWValue(traits::IOWriter& w, std::string_view& fstr, T const value) {
 
             Cursor fmtCursor{f};
             auto holder = Placeholder::fromCursor(fmtCursor);
-            if (!holder.has_value()) {
+            if (!holder.has_value()) [[unlikely]] {
                 w.write("??");
                 return;
             }

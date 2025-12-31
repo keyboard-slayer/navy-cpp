@@ -1,5 +1,6 @@
 module;
 
+#include <algorithm>
 #include <cstddef>
 #include <optional>
 #include <span>
@@ -37,11 +38,12 @@ public:
     }
 
     bool skip(std::string_view const slice) {
-        for (char const el : slice)
-            if (!this->skip(el))
-                return false;
-
-        return true;
+        return std::none_of(
+            slice.begin(),
+            slice.end(),
+            [this](char const el) {
+                return !this->skip(el);
+            });
     }
 
     void eat(bool (*fn)(char el), std::span<char> &buffer) {

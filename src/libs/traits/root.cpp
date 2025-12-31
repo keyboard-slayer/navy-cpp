@@ -1,5 +1,6 @@
 module;
 
+#include <algorithm>
 #include <cstddef>
 #include <string_view>
 
@@ -9,8 +10,11 @@ export namespace traits {
 struct IOWriter {
     size_t write(std::string_view const s) const {
         size_t count = 0;
-        for (char const chr: s)
-             count += this->write(chr);
+
+        std::for_each(s.begin(), s.end(), [this, &count](char const chr) {
+            count += this->write(chr);
+        });
+
         return count;
     }
 
