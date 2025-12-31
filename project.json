@@ -1,0 +1,6 @@
+{
+    "$schema": "https://schemas.cute.engineering/stable/cutekit.manifest.project.v1",
+    "type": "project",
+    "id": "keyboard-slayer/navy-cpp",
+    "version": "v0.1.0"
+}

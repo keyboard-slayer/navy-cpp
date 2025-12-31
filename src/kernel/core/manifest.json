@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schemas.cute.engineering/stable/cutekit.manifest.component.v1",
+    "type": "exe",
+    "id": "kernel.core",
+    "requires": [
+        "kernel.loader",
+        "kernel.arch",
+        "cxx-runtime",
+        "freestnd-cxx",
+        "stdc-ansi",
+        "text"
+    ]
+}
