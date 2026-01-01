@@ -13,7 +13,7 @@ export class Cursor {
     size_t pos = 0;
 
 public:
-    explicit Cursor(std::string_view const str) : _str(str) {}
+    explicit Cursor(std::string_view const& str) : _str(str) {}
 
     constexpr std::size_t rem() const {
         return _str.size() - pos;
@@ -37,7 +37,7 @@ public:
         return true;
     }
 
-    bool skip(std::string_view const slice) {
+    bool skip(std::string_view const& slice) {
         return std::none_of(
             slice.begin(),
             slice.end(),

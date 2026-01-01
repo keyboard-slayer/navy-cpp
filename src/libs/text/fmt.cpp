@@ -155,7 +155,8 @@ struct Placeholder {
     }
 };
 
-void writeValueW(traits::IOWriter& w, Placeholder fmt, char const* value) {
+template <traits::IOWriter W>
+void writeValueW(W& w, Placeholder fmt, char const* value) {
     if (fmt.spec == Placeholder::any) {
         w.write('\"');
         w.write(value);
@@ -167,7 +168,8 @@ void writeValueW(traits::IOWriter& w, Placeholder fmt, char const* value) {
     }
 }
 
-void writeValueW(traits::IOWriter& w, Placeholder fmt, uint64_t value) {
+template <traits::IOWriter W>
+void writeValueW(W& w, Placeholder fmt, uint64_t value) {
     char buf[32];
     switch (fmt.spec) {
     case Placeholder::any:
@@ -192,8 +194,8 @@ void writeValueW(traits::IOWriter& w, Placeholder fmt, uint64_t value) {
     w.write(buf);
 }
 
-template <typename T>
-void formatWValue(traits::IOWriter& w, std::string_view& fstr, T const value) {
+template <typename T, traits::IOWriter W>
+void formatWValue(W& w, std::string_view& fstr, T const& value) {
     while (!fstr.empty()) {
         if (fstr.front() == '{') {
             fstr.remove_prefix(1);
@@ -222,8 +224,8 @@ void formatWValue(traits::IOWriter& w, std::string_view& fstr, T const value) {
     }
 }
 
-template <typename... Args>
-void formatW(traits::IOWriter& w, char const* s, Args const&... args) {
+template <traits::IOWriter W, typename... Args>
+void formatW(W& w, char const* s, Args const&... args) {
     std::string_view fstr{s};
     (formatWValue(w, fstr, args), ...);
 }
