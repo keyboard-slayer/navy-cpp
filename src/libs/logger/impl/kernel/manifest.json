@@ -1,8 +1,11 @@
 {
     "$schema": "https://schemas.cute.engineering/stable/cutekit.manifest.component.v1",
-    "id": "logger",
+    "id": "logger.kernel",
     "type": "lib",
-    "requires": [
+    "enableIf": {
+        "freestanding": [true]
+    },
+    "provides": [
         "logger.embed"
     ]
 }

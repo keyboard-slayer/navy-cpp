@@ -26,6 +26,8 @@ public:
     }
 
     constexpr char const& next() {
+        if (this->ended())
+            return _str.at(pos);
         return _str.at(pos++);
     }
 
@@ -47,18 +49,18 @@ public:
     }
 
     void eat(bool (*fn)(char el), std::span<char> &buffer) {
-        auto c = this->peek();
-        if (!c.has_value())
+        if (this->ended())
             return;
 
-        char current = c.value();
-        std::size_t idx = 0;
+        std::optional<char> current;
+        size_t idx = 0;
 
-        while (fn(current)) {
-            buffer[idx++] = current;
-            this->next();
-            current = this->peek().value_or(0);
-        }
+        do {
+            current = this->next();
+            if (!fn(current.value()))
+                break;
+            buffer[idx++] = current.value();
+        } while (!this->ended());
     }
 
     bool ended() const {

@@ -1,5 +1,6 @@
 #include <cxxabi.h>
 
+import Logger;
 import Arch;
 
 using namespace __cxxabiv1;

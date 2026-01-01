@@ -1,4 +1,4 @@
-export module logging;
+export module Logger;
 
-export namespace log {
-}; // namespace log
+export import :impl;
+export import :embed;

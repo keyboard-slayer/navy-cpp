@@ -1,7 +1,6 @@
 module;
 
 #include <array>
-#include <cstddef>
 #include <cstdint>
 #include <optional>
 #include <span>
@@ -112,17 +111,19 @@ struct Placeholder {
             }
         }
 
-        if (cur.ended()) {
+        if (cur.ended())
             return self;
-        }
 
         if (!cur.skip(':'))
             return {};
 
         self.fill = cur.next();
 
-        if (!isdigit(cur.peek().value_or(0))) {
-            switch (cur.next()) {
+        if (cur.ended())
+            return {};
+
+        if (!isdigit(cur.peek().value())) {
+            switch (cur.peek().value()) {
             case '<':
                 self.align = left;
                 break;
@@ -135,9 +136,10 @@ struct Placeholder {
             default:
                 return {};
             }
-        } else {
+        } else
             return {};
-        }
+
+        cur.next();
 
         std::array<char, 9> width{0};
         std::span<char> buffer(width);
@@ -156,7 +158,11 @@ struct Placeholder {
 };
 
 template <traits::IOWriter W>
-void writeValueW(W& w, Placeholder fmt, char const* value) {
+void writeValueW(W& w, Placeholder fmt, std::string_view value) {
+    if (fmt.align == Placeholder::left)
+        for (size_t i = 0; i < fmt.width - value.size(); ++i)
+            w.write(fmt.fill);
+
     if (fmt.spec == Placeholder::any) {
         w.write('\"');
         w.write(value);
@@ -166,6 +172,9 @@ void writeValueW(W& w, Placeholder fmt, char const* value) {
     } else {
         w.write(value);
     }
+    if (fmt.align == Placeholder::right)
+        for (size_t i = 0; i < fmt.width - value.size(); ++i)
+            w.write(fmt.fill);
 }
 
 template <traits::IOWriter W>
@@ -191,7 +200,16 @@ void writeValueW(W& w, Placeholder fmt, uint64_t value) {
         buf[2] = 0;
         return;
     }
+
+    if (fmt.align == Placeholder::left)
+        for (size_t i = 0; i < fmt.width - std::char_traits<char>::length(buf); ++i)
+            w.write(fmt.fill);
+
     w.write(buf);
+
+    if (fmt.align == Placeholder::right)
+        for (size_t i = 0; i < fmt.width - std::char_traits<char>::length(buf); ++i)
+            w.write(fmt.fill);
 }
 
 template <typename T, traits::IOWriter W>
@@ -225,8 +243,10 @@ void formatWValue(W& w, std::string_view& fstr, T const& value) {
 }
 
 template <traits::IOWriter W, typename... Args>
-void formatW(W& w, char const* s, Args const&... args) {
-    std::string_view fstr{s};
-    (formatWValue(w, fstr, args), ...);
+void formatW(W& w, std::string_view s, Args const&... args) {
+    (formatWValue(w, s, args), ...);
+
+    if (!s.empty())
+        w.write(s);
 }
 }; // namespace fmt

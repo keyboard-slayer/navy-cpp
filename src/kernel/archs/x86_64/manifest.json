@@ -9,6 +9,7 @@
         "kernel.arch"
     ],
     "requires": [
-        "traits"
+        "traits",
+        "logger"
     ]
 }

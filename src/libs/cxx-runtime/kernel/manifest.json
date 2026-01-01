@@ -7,5 +7,9 @@
     },
     "provides": [
         "cxx-runtime"
+    ],
+    "requires": [
+        "kernel.arch",
+        "logger"
     ]
 }

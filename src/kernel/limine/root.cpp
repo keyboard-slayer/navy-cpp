@@ -7,6 +7,7 @@ export module Loader;
 
 import Text;
 import Arch;
+import Logger;
 
 namespace {
 [[gnu::used, gnu::section(".limine_requests")]]
@@ -21,6 +22,7 @@ std::array<uint64_t, 4> volatile limine_requests_end = LIMINE_REQUESTS_END_MARKE
 
 extern "C" [[noreturn]] void limine_entry() {
     auto& e9 = arch::getDefaultWriter();
-    fmt::formatW(e9, "Hello, {s}! {X}\n", "World", 42);
+    Log::use(e9);
+    Log::debug("Hello, World !");
     for (;;) {}
 }
